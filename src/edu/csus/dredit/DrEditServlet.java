@@ -183,6 +183,19 @@ public class DrEditServlet extends HttpServlet {
   }
 
   /**
+   * Writing doGet method to see how dredit flow works.
+   * Added by Avani
+   */
+  /*@Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
+      System.out.println("start of GoogleDriveAuth:::::::");
+      credentialManager = new CredentialManager(
+                getClientSecrets(), TRANSPORT, JSON_FACTORY);
+      handleCallbackIfRequired(req, resp);
+  }*/
+  
+  /**
    * Returns the credentials of the user in the session. If user is not in the
    * session, returns null.
    * @param req   Request object.
@@ -220,7 +233,7 @@ public class DrEditServlet extends HttpServlet {
    *         there was a problem.
    */
   protected Drive getDriveService(Credential credential) {
-    return new Drive.Builder(TRANSPORT, JSON_FACTORY, credential).build();
+    return new Drive.Builder(TRANSPORT, JSON_FACTORY, credential).setApplicationName("dredit").build();
   }
 
   /**

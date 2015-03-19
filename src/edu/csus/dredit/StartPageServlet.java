@@ -39,6 +39,7 @@ public class StartPageServlet extends DrEditServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
+	  System.out.print("kahitari...............");
     // handle OAuth2 callback
     handleCallbackIfRequired(req, resp);
    
@@ -58,7 +59,7 @@ public class StartPageServlet extends DrEditServlet {
         return;
       }
     }
-    req.getRequestDispatcher("/public/index.html").forward(req, resp);
+    req.getRequestDispatcher("/public/partials/editor.html").forward(req, resp);
   }
 
 }

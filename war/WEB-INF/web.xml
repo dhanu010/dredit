@@ -48,7 +48,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
    <welcome-file>start</welcome-file>
  </welcome-file-list>
  
- <security-constraint>
+ <!-- <security-constraint>
         <web-resource-collection>
             <web-resource-name>profile</web-resource-name>
            <url-pattern>/profile/*</url-pattern>
@@ -66,6 +66,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <auth-constraint>
             <role-name>admin</role-name>
         </auth-constraint>
-    </security-constraint>
+    </security-constraint>-->
 
 </web-app>
