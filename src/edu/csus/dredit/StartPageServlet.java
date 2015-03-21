@@ -59,7 +59,7 @@ public class StartPageServlet extends DrEditServlet {
         return;
       }
     }
-    req.getRequestDispatcher("/public/partials/editor.html").forward(req, resp);
+    req.getRequestDispatcher("/public/index.html").forward(req, resp);
   }
 
 }

@@ -4,6 +4,15 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<!-- <servlet>
+		<servlet-name>CSC230SpreadsheetIntegration</servlet-name>
+		<servlet-class>edu.csus.dredit.CSC230SpreadsheetIntegration</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CSC230SpreadsheetIntegration</servlet-name>
+		<url-pattern>/CSC230SpreadsheetIntegration</url-pattern>
+	</servlet-mapping> -->
+	
 	<servlet>
 		<servlet-name>Dredit</servlet-name>
 		<servlet-class>edu.csus.dredit.DrEditServlet</servlet-class>
