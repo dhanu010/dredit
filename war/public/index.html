@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>DrEdit</title>
+    <title>Credit Card Debt Viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -41,7 +41,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">DrEdit</a>
+          <a class="brand" href="#">Credit Card Debt Viewer</a>
           <ul class="nav pull-right" ng-controller="UserCtrl">
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -56,11 +56,101 @@
         </div>
       </div>
     </div>
+    
+     <!--added by Juan-->  
+ 	<div>
+    	<a href="#generate-report-dialog" data-toggle="modal" class="btn">Generate a report</a>
+
+    	<!-- This comes up when the button is clicked.  Followed example of about and share buttons
+    	in drEdit original code.  It uses the controller: generateReportCtrl, which is defined in controller.js -->
+    	<div class="modal hide" id="generate-report-dialog" ng-controller="generateReportCtrl">
+    		<div class="modal-header">
+    		<button type="button" class="close" data-dismiss="modal">Ã—</button>
+    		<h3>Generate Report</h3>
+  			</div>
+  			<div class="modal-body">
+    		<p> Select The report type: </p>
+    		<!-- TODO: Add functionality of the buttons.  Right now, they do absolutely nothing :( -->
+    		<a class="btn">By Month</a>
+    		<a class="btn">By Credit Card</a>
+    		<a class="btn">Summary Report</a>
+  			</div>
+  			<div class="modal-footer">
+			    <a href class="btn" data-dismiss="modal">Cancel</a>
+   				<!-- NEED TO SELECT HOW WE WILL HANDLE REPORTS, THEY WILL PROBABLY NOT BE A POP UP 
+   					SCREEN, BUT NEED TO FIND A WAY TO MAKE IT A NEW DIV ONLY VISIBLE WHEN SELECTING REPORT -->
+  			</div>
+  		</div>	
+    	
+    	
+    	<a href="#enter-payment-dialog" data-toggle="modal" class="btn">Enter payment</a>
+
+		<!-- This comes up when the button is clicked.  Followed example of about and share buttons
+    	in drEdit original code.  It uses the controller: enterPaymentCtrl, which is defined in controller.js -->
+    	<div class="modal hide" id="enter-payment-dialog" ng-controller="enterPaymentCtrl">
+    		<div class="modal-header">
+    		<button type="button" class="close" data-dismiss="modal">Ã—</button>
+    		<h3>Enter Payment</h3>
+  			</div>
+  			<div class="modal-body">
+    		<form>
+        		<label>Date:</label>
+        		<input type="text">
+    		</form>
+    		<form>
+        		<label>Payment:</label>
+        		<input type="text">
+    		</form>
+    		<form>
+        		<label>Balance:</label>
+        		<input type="text">
+    		</form>
+    		<form>
+        		<label>APR:</label>
+        		<input type="text">
+    		</form>
+  			</div>
+  			<div class="modal-footer">
+			    <a href class="btn" data-dismiss="modal">Cancel</a>
+   				<!-- NEED TO ADD AN OK BUTTON THAT DOES THE WORK OF ADDING A ROW TO SPREADSHEET -->
+  			</div>
+  		</div>	
+    	
+    	
+    	<!-- Button to add a new credit card.  links to the code on "add-card-dialog" -->
+    	<a href="#add-card-dialog" data-toggle="modal" class="btn">Add a new credit card</a>
+    	
+    	<!-- This comes up when the button is clicked.  Followed example of about and share buttons
+    	in drEdit original code.  It uses the controller: addCardCtrl, which is defined in controller.js -->
+    	<div class="modal hide" id="add-card-dialog" ng-controller="addCardCtrl">
+    		<div class="modal-header">
+    		<button type="button" class="close" data-dismiss="modal">Ã—</button>
+    		<h3>Adding a new credit card</h3>
+  			</div>
+  			<div class="modal-body">
+    		<form>
+        		<label>Enter the name of the credit card:</label>
+        		<input type="text">
+    		</form>
+  			</div>
+  			<div class="modal-footer">
+			    <a href class="btn" data-dismiss="modal">Cancel</a>
+   				<!-- NEED TO ADD AN OK BUTTON THAT DOES THE WORK OF ADDING A CREDIT CARD -->
+  			</div>
+  		</div>	
+
+  	</div>  
+	<!-- END OF JUAN MODIFICATIONS -->
+     
+	<!--   ORIGINAL LINES-->  
+	 <!--       
     <div ng-view></div>
 
     <div id="editor" ace-editor></div>
 
     <alert id="error"></alert>
+	-->
+	
 
     <!-- Le javascript
     ================================================== -->
