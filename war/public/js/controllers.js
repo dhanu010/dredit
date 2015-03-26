@@ -40,6 +40,7 @@ function ShareCtrl($scope, appId, doc) {
      client.showSharingSettings();
      }
      */
+	
 }
 
 function MenuCtrl($scope, $location, appId) {
@@ -88,5 +89,32 @@ function AboutCtrl($scope, backend) {
             backend.about().then(function (result) {
                 $scope.info = result.data;
             });
-        });
+        });    
 }
+
+/*Functions added by Juan Begin here
+ * TODO: Add the code to call the drive API and actually make the changes*/
+function addCardCtrl($scope) {
+	$('#add-card-dialog').on('show',
+			function() {
+		
+	});
+
+}
+
+function generateReportCtrl($scope) {
+	$('#generate-report-dialog').on('show',
+			function() {
+		
+	});
+
+}
+
+function enterPaymentCtrl($scope) {
+	$('#enter-payment-dialog').on('show',
+			function() {
+		
+	});
+
+}
+
