@@ -144,10 +144,134 @@ function generateReportCtrl($scope, $http) {
 }
 
 function enterPaymentCtrl($scope) {
-	$('#enter-payment-dialog').on('show',
-			function() {
-		
+	
+	$scope.isYearValid = false;
+	$scope.isPaymentAmountValid = false;
+	$scope.isBalanceAmountValid = false;
+	$scope.isAPRValid = false;
+	$('#addPaymentButton').attr('disabled','disabled');
+	
+	$scope.checkIfEnableOrDisable = function () {
+		console.log("isYearValid:"  + $scope.isYearValid + " payment:" +  $scope.isPaymentAmountValid +
+				" balance:" + $scope.isBalanceAmountValid + " APR:" + $scope.isAPRValid);
+		if($scope.isYearValid && $scope.isPaymentAmountValid && $scope.isBalanceAmountValid && $scope.isAPRValid)
+			$('#addPaymentButton').removeAttr("disabled");
+		else
+			$('#addPaymentButton').attr('disabled','disabled');   
+	} 
+	
+	//check to see if the year entered is valid
+	$('#ccYearField').on('change', function () {  
+		var valueEntered = $('#ccYearField').val();
+		console.log("entered year is: " + valueEntered);
+		var valueEnteredAsNumber = Number(valueEntered);
+		console.log("entered year as number is:" + valueEnteredAsNumber);
+		if(! valueEnteredAsNumber) { //value entered is not a NaN
+			$('#ccYearEnteredErrorMsg').text("Please enter a valid year in the form YYYY");
+			$scope.isYearValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else if(valueEnteredAsNumber < 1900 ) {
+			$('#ccYearEnteredErrorMsg').text("Year must be after 1900");
+			$scope.isYearValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else if(valueEnteredAsNumber > 2100 ) {
+			$('#ccYearEnteredErrorMsg').text("Year must be before 2100");
+			$scope.isYearValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else {
+			$('#ccYearEnteredErrorMsg').text("");
+			$scope.isYearValid = true;
+			console.log("YAY!");
+			$scope.checkIfEnableOrDisable();
+		}
+	});
+	
+	//check to see if the payment amount is valid
+	//TODO: Remove '$' and ',' so that numbers like $5,000 can be accepted
+	$('#ccPaymentField').on('change', function () {  
+		var valueEntered = $('#ccPaymentField').val();
+		console.log("entered Payment is: " + valueEntered);
+		var valueEnteredAsNumber = Number(valueEntered);
+		console.log("entered payment as number is:" + valueEnteredAsNumber);
+		if(! valueEnteredAsNumber) { //value entered is not a NaN
+			$('#ccPaymentEnteredErrorMsg').text("Balance entered must be a number");
+			$scope.isPaymentAmountValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else if(valueEnteredAsNumber < 0 ) {
+			$('#ccPaymentEnteredErrorMsg').text("Balance must be greater than 0");
+			$scope.isPaymentAmountValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else {
+			$('#ccPaymentEnteredErrorMsg').text("");
+			$scope.isPaymentAmountValid = true;
+			$scope.checkIfEnableOrDisable();
+		}
 	});
 
+	//check to see if balance entered is valid
+	//TODO: Remove '$' and ',' so that numbers like $5,000 can be accepted
+	$('#ccBalanceField').on('change', function () {  
+		var valueEntered = $('#ccBalanceField').val();
+		console.log("entered Balance is: " + valueEntered);
+		var valueEnteredAsNumber = Number(valueEntered);
+		console.log("entered balance as number is:" + valueEnteredAsNumber);
+		if(! valueEnteredAsNumber) { //value entered is not a NaN
+			$('#ccBalanceEnteredErrorMsg').text("Balance entered must be a number");
+			$scope.isBalanceAmountValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else if(valueEnteredAsNumber < 0 ) {
+			$('#ccBalanceEnteredErrorMsg').text("Balance must be greater than 0");
+			$scope.isBalanceAmountValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else {
+			$('#ccBalanceEnteredErrorMsg').text("");
+			$scope.isBalanceAmountValid = true;
+			console.log("isBalanceAmountValid was set to true");
+			$scope.checkIfEnableOrDisable();
+		}
+	});
+
+	//check to see if APR entered is valid
+	//TODO: Remove '%' and ',' so that numbers like 10% can be accepted
+	$('#ccAprField').on('change', function () {  
+		var valueEntered = $('#ccAprField').val();
+		console.log("entered APR is: " + valueEntered);
+		var valueEnteredAsNumber = Number(valueEntered);
+		console.log("entered APR as number is:" + valueEnteredAsNumber);
+		if(! valueEnteredAsNumber) { //value entered is not a NaN
+			$('#ccAprEnteredErrorMsg').text("Interest should be a number");
+			$scope.isAPRValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else if(valueEnteredAsNumber < 0 ) {
+			$('#ccAprEnteredErrorMsg').text("Interest should be greater than 0");
+			$scope.isAPRValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else if(valueEnteredAsNumber > 100 ) {
+			$('#ccAprEnteredErrorMsg').text("Interest should be less than 100");
+			$scope.isAPRValid = false;
+			$scope.checkIfEnableOrDisable();
+		}
+		else {
+			$('#ccAprEnteredErrorMsg').text("");
+			$scope.isAPRValid = true;
+			$scope.checkIfEnableOrDisable();
+		}
+	});
+
+	
+	$scope.addPaymentRow = function () {
+		//add code to add payment
+	};
+	
 }
+
 
