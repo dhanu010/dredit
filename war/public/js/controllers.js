@@ -95,19 +95,52 @@ function AboutCtrl($scope, backend) {
 /*Functions added by Juan Begin here
  * TODO: Add the code to call the drive API and actually make the changes*/
 function addCardCtrl($scope) {
-	$('#add-card-dialog').on('show',
-			function() {
 		
-	});
-
+	$scope.addCard = function () {
+		
+		if( ! $scope.newCardName) {  //check to see if nothing was entered.
+			window.alert("Please enter a name for the new credit card");
+		}
+			//TODO: find a more elegant solution
+		else {
+			//TODO: add code to add a credit card work sheet to the working spreadsheet
+			//TODO: find a more elegant way of providing feedback to user
+			window.alert("A new awesome credit Card has been added: " + $scope.newCardName);
+			$('#add-card-dialog').modal('hide');
+		}
+	};
 }
 
-function generateReportCtrl($scope) {
-	$('#generate-report-dialog').on('show',
-			function() {
-		
-	});
+function generateReportCtrl($scope, $http) {
 
+	$scope.generateReportByMonth = function () {
+		window.alert("Coming soon: Creating a report by month");
+		$('#generate-report-dialog').modal('hide');
+	};
+
+	$scope.generateReportCreditCard = function () {
+		window.alert("Coming soon: Creating a report by selecting credit card");
+		$('#generate-report-dialog').modal('hide');
+	};
+	
+	$scope.generateReporSummary = function () {
+		var currDate = new Date();
+		var dateString = currDate.toDateString() + " " + currDate.getHours() + ":" + 
+			currDate.getMinutes() + ":" + currDate.getSeconds() + ".txt";
+		$http.get("/ccreport", {
+			params: {
+				reportType:"summary",
+				selectValue:"",
+				fileName:"Report by summary " + dateString 
+				}
+			}).then(function (response) {
+				console.log ("generateReportSummary response JSON object is: " + JSON.stringify(response) );
+				window.alert("The file that will be created: " + response.data.members.fileNameThatWasPassedDownWas);
+			});
+		//TODO: Error handling
+		$('#generate-report-dialog').modal('hide');
+	};
+	
 }
 
 function enterPaymentCtrl($scope) {

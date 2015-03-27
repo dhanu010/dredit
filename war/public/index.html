@@ -71,9 +71,9 @@
   			<div class="modal-body">
     		<p> Select The report type: </p>
     		<!-- TODO: Add functionality of the buttons.  Right now, they do absolutely nothing :( -->
-    		<a class="btn">By Month</a>
-    		<a class="btn">By Credit Card</a>
-    		<a class="btn">Summary Report</a>
+    		<a class="btn" ng-click="generateReportByMonth()">By Month</a>
+    		<a class="btn" ng-click="generateReportCreditCard()">By Credit Card</a>
+    		<a class="btn" ng-click="generateReporSummary()">Summary Report</a>
   			</div>
   			<div class="modal-footer">
 			    <a href class="btn" data-dismiss="modal">Cancel</a>
@@ -127,16 +127,20 @@
     		<button type="button" class="close" data-dismiss="modal">Ã—</button>
     		<h3>Adding a new credit card</h3>
   			</div>
+  			
+  			
   			<div class="modal-body">
     		<form>
         		<label>Enter the name of the credit card:</label>
-        		<input type="text">
+        		<input type="text" ng-model="newCardName">
+        		<p id="errorMessage"> </p>
     		</form>
   			</div>
   			<div class="modal-footer">
 			    <a href class="btn" data-dismiss="modal">Cancel</a>
-   				<!-- NEED TO ADD AN OK BUTTON THAT DOES THE WORK OF ADDING A CREDIT CARD -->
+   				<a href ng-click="addCard()" class="btn btn-primary">Add Card</a>
   			</div>
+  			
   		</div>	
 
   	</div>  
