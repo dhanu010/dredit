@@ -53,6 +53,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>AboutServlet</servlet-name>
     <url-pattern>/about</url-pattern>
   </servlet-mapping>
+  <!-- Credit card viewer servlets added by Juan -->
+    <servlet>
+    <servlet-name>CCReportServlet</servlet-name>
+    <servlet-class>edu.csus.dredit.CCReportServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CCReportServlet</servlet-name>
+    <url-pattern>/ccreport</url-pattern>
+  </servlet-mapping>
+  <!--  end credit card debt viewer servlets -->
  <welcome-file-list>
    <welcome-file>start</welcome-file>
  </welcome-file-list>
