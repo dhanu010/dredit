@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Credit Card Debt Viewer</title>
+    <title>** Credit Card Debt Viewer **</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -60,7 +60,6 @@
      <!--added by Juan-->  
  	<div>
     	<a href="#generate-report-dialog" data-toggle="modal" class="btn">Generate a report</a>
-
     	<!-- This comes up when the button is clicked.  Followed example of about and share buttons
     	in drEdit original code.  It uses the controller: generateReportCtrl, which is defined in controller.js -->
     	<div class="modal hide" id="generate-report-dialog" ng-controller="generateReportCtrl">
@@ -84,7 +83,6 @@
     	
     	
     	<a href="#enter-payment-dialog" data-toggle="modal" class="btn">Enter payment</a>
-
 		<!-- This comes up when the button is clicked.  Followed example of about and share buttons
     	in drEdit original code.  It uses the controller: enterPaymentCtrl, which is defined in controller.js -->
     	<div class="modal hide" id="enter-payment-dialog" ng-controller="enterPaymentCtrl">
@@ -116,38 +114,39 @@
   			</div>
   		</div>	
     	
-    	
+    	<!-- Functions added by Avani BEGIN here -->
     	<!-- Button to add a new credit card.  links to the code on "add-card-dialog" -->
     	<a href="#add-card-dialog" data-toggle="modal" class="btn">Add a new credit card</a>
-    	
     	<!-- This comes up when the button is clicked.  Followed example of about and share buttons
     	in drEdit original code.  It uses the controller: addCardCtrl, which is defined in controller.js -->
+    	<!-- <div class="modal hide" id="add-card-dialog" ng-controller="addCardCtrl"> -->
     	<div class="modal hide" id="add-card-dialog" ng-controller="addCardCtrl">
     		<div class="modal-header">
     		<button type="button" class="close" data-dismiss="modal">Ã—</button>
-    		<h3>Adding a new credit card</h3>
+    		<h3>Add New Credit Card</h3>
   			</div>
   			<div class="modal-body">
     		<form>
-        		<label>Enter the name of the credit card:</label>
-        		<input type="text">
+        		<label>Enter name of Credit Card:</label>
+        		<input type="text" id="creditCardName">
     		</form>
   			</div>
   			<div class="modal-footer">
+  			<form>
+  			    <a class="btn" data-dismiss="modal" ng-click="addCreditCard()">Add Card</a>
 			    <a href class="btn" data-dismiss="modal">Cancel</a>
-   				<!-- NEED TO ADD AN OK BUTTON THAT DOES THE WORK OF ADDING A CREDIT CARD -->
-  			</div>
+			 </form>   
+			</div>
   		</div>	
-
-  	</div>  
+		<!-- Functions added by Avani END here -->
+		</div>  
+		
 	<!-- END OF JUAN MODIFICATIONS -->
      
 	<!--   ORIGINAL LINES-->  
 	 <!--       
     <div ng-view></div>
-
     <div id="editor" ace-editor></div>
-
     <alert id="error"></alert>
 	-->
 	

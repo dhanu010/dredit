@@ -92,16 +92,21 @@ function AboutCtrl($scope, backend) {
         });    
 }
 
+/*Functions added by Avani BEGIN here*/
+function addCardCtrl($scope, backend) {
+			$scope.addCreditCard = function () {
+				creditCardName = $('#creditCardName').val();
+				console.log("Entered Credit card is: " + creditCardName);
+			backend.insertspreadsheet();
+			};
+			
+	}
+/*Functions added by Avani END here*/
+
+
+
 /*Functions added by Juan Begin here
  * TODO: Add the code to call the drive API and actually make the changes*/
-function addCardCtrl($scope) {
-	$('#add-card-dialog').on('show',
-			function() {
-		
-	});
-
-}
-
 function generateReportCtrl($scope) {
 	$('#generate-report-dialog').on('show',
 			function() {
@@ -117,4 +122,5 @@ function enterPaymentCtrl($scope) {
 	});
 
 }
+
 

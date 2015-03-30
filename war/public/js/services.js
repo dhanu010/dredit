@@ -147,6 +147,16 @@ module.factory('backend',
             return angular.fromJson(data);
         };
         var service = {
+        	insertspreadsheet:function () {
+                return $http.get("/insertspreadsheet", 
+        				{
+        			    params:{
+        				    'creditCardName':creditCardName
+        				       }, 
+        		        transformResponse:jsonTransform
+        		    });
+            },
+                
             user:function () {
                 return $http.get('/user', {transformResponse:jsonTransform});
             },
