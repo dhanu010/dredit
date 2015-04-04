@@ -35,10 +35,7 @@ public class InsertSpreadsheetServlet extends DrEditServlet {
 		    Drive service = getDriveService(getCredential(req, resp));
 
 		    //Insert a file  
-		    File body = new File();
-		    body.setTitle(creditCardName);
-		    body.setDescription("A Spreadsheet stores the credit card summary");
-		    body.setMimeType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		    File body = createFileBody("CreditCard_" + creditCardName);
 		    System.out.println("-----------------2");
 		    
 		    java.io.File fileContent = new java.io.File("WEB-INF/Book1.xlsx");
@@ -58,6 +55,14 @@ public class InsertSpreadsheetServlet extends DrEditServlet {
 	        	// return null;
 	        }
 		}
+
+	protected File createFileBody(String creditCardName) {
+		File body = new File();
+		body.setTitle(creditCardName);
+		body.setDescription("A Spreadsheet stores the credit card summary");
+		body.setMimeType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		return body;
+	}
 
 	}
 

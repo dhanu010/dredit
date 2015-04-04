@@ -41,7 +41,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Credit Card Debt Viewer</a>
+          <a class="brand" href="#">** Credit Card Debt Viewer **</a>
           <ul class="nav pull-right" ng-controller="UserCtrl">
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -64,22 +64,38 @@
     	in drEdit original code.  It uses the controller: generateReportCtrl, which is defined in controller.js -->
     	<div class="modal hide" id="generate-report-dialog" ng-controller="generateReportCtrl">
     		<div class="modal-header">
-    		<button type="button" class="close" data-dismiss="modal">Ã—</button>
+    		<button type="button" class="close" data-dismiss="modal">X</button>
     		<h3>Generate Report</h3>
   			</div>
   			<div class="modal-body">
     		<p> Select The report type: </p>
     		<!-- TODO: Add functionality of the buttons.  Right now, they do absolutely nothing :( -->
     		<a class="btn" ng-click="generateReportByMonth()">By Month</a>
-    		<a class="btn" ng-click="generateReportCreditCard()">By Credit Card</a>
+    		<a class="btn" ng-click="generateCreditCardDropDown()">By Credit Card</a>
     		<a class="btn" ng-click="generateReporSummary()">Summary Report</a>
-  			</div>
+  			
+  			<!-- AVANI Adding div to handle generate report by cc -->
+				<div class="modal hide" id="generate-report-bycreditcard-dialog" ng-controller="generateReportCtrl">
+					<div class="modal-header"></div>
+					<div class="modal-body">
+						<label>Select credit card</label>		
+						<select id="creditCardNames">
+						    <option ng-repeat="creditCardName in creditCardNames">{{creditCardName}}</option>
+						</select>					
+					</div>
+					<div class="modal-footer">
+						<a class="btn" ng-click="">Generate</a>
+						<a href class="btn" data-dismiss="modal">Cancel</a>
+					</div>
+				</div>
+				
+			</div>
   			<div class="modal-footer">
 			    <a href class="btn" data-dismiss="modal">Cancel</a>
    				<!-- NEED TO SELECT HOW WE WILL HANDLE REPORTS, THEY WILL PROBABLY NOT BE A POP UP 
    					SCREEN, BUT NEED TO FIND A WAY TO MAKE IT A NEW DIV ONLY VISIBLE WHEN SELECTING REPORT -->
   			</div>
-  		</div>	
+  	    </div>	
     	
     	
     	<a href="#enter-payment-dialog" data-toggle="modal" class="btn">Enter payment</a>
@@ -88,7 +104,7 @@
     	in drEdit original code.  It uses the controller: enterPaymentCtrl, which is defined in controller.js -->
     	<div class="modal hide" id="enter-payment-dialog" ng-controller="enterPaymentCtrl">
     		<div class="modal-header">
-    		<button type="button" class="close" data-dismiss="modal">Ã—</button>
+    		<button type="button" class="close" data-dismiss="modal">X</button>
     		<h3><b>Enter Payment Information:</b></h3>
   			</div>
   			<div class="modal-body">
@@ -147,7 +163,7 @@
     	<!-- <div class="modal hide" id="add-card-dialog" ng-controller="addCardCtrl"> -->
     	<div class="modal hide" id="add-card-dialog" ng-controller="addCardCtrl">
     		<div class="modal-header">
-    		<button type="button" class="close" data-dismiss="modal">Ã—</button>
+    		<button type="button" class="close" data-dismiss="modal">X</button>
     		<h3>Add New Credit Card</h3>
   			</div>
   			

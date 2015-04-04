@@ -150,11 +150,12 @@ module.factory('backend',
         	insertspreadsheet:function () {
                 return $http.get("/insertspreadsheet", 
         				{
-        			    params:{
-        				    'creditCardName':creditCardName
-        				       }, 
-        		        transformResponse:jsonTransform
-        		    });
+        			    	params:{
+        			    		'creditCardName':creditCardName
+        		   			}, 
+        		   			transformResponse:jsonTransform
+        		    }).then(function (response) { window.alert("Your entered Credit Card is added ");});
+                $('#add-card-dialog').modal('hide');
             },
                 
             user:function () {

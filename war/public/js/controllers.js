@@ -112,9 +112,13 @@ function generateReportCtrl($scope, $http) {
 		$('#generate-report-dialog').modal('hide');
 	};
 
-	$scope.generateReportCreditCard = function () {
-		window.alert("Coming soon: Creating a report by selecting credit card");
-		$('#generate-report-dialog').modal('hide');
+	$scope.generateCreditCardDropDown = function () {
+		$http.get('/ccdropdown').then(function (response) {
+			$scope.creditCardNames = response.data.members;
+			console.log ("generateReportSummary response JSON object is: " + JSON.stringify(response) );
+			});
+		$('#generate-report-bycreditcard-dialog').modal('show');
+		//$('#generate-report-dialog').modal('hide');
 	};
 	
 	$scope.generateReporSummary = function () {
