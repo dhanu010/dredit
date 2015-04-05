@@ -156,21 +156,42 @@ function generateReportCtrl($scope, $http) {
 }
 
 function enterPaymentCtrl($scope, $http) {
-	
-	$scope.isYearValid = false;
-	$scope.isPaymentAmountValid = false;
-	$scope.isBalanceAmountValid = false;
-	$scope.isAPRValid = false;
-	$('#addPaymentButton').attr('disabled','disabled');
-	
-	//generate the drop down menu of credit cards
-	//TODO - find where else to place this, so that if there is an added credit card, it updates
-	//because right now, it will only update at the beginning.
-	$http.get('/ccdropdown').then(function (response) {
-		$scope.creditCardNames = response.data.members;
-		console.log ("EnteredPaymentCtrl credit cards are: " + JSON.stringify(response) );
-		});
 
+	$scope.resetPaymentValuesAndState = function() {
+		//reset the state
+		$scope.isYearValid = false;
+		$scope.isPaymentAmountValid = false;
+		$scope.isBalanceAmountValid = false;
+		$scope.isAPRValid = false;
+		$('#addPaymentButton').attr('disabled','disabled');
+	
+		//reset the values
+		$('#ccYearField').val("");
+		$('#ccYearEnteredErrorMsg').text("");
+		$('#ccPaymentField').val("");
+		$('#ccPaymentEnteredErrorMsg').text("");
+		$('#ccBalanceField').val("");
+		$('#ccBalanceEnteredErrorMsg').text("");
+		$('#ccAprField').val("");
+		$('#ccAprEnteredErrorMsg').text("");
+		
+		//get the names of credit cards
+		$http.get('/ccdropdown').then(function (response) {
+			$scope.creditCardNames = response.data.members;
+			console.log ("EnteredPaymentCtrl credit cards are: " + JSON.stringify(response) );
+			});		
+	}
+
+	//call this when it first opens
+	$scope.resetPaymentValuesAndState();
+	
+	$('#enter-payment-dialog').on('hide', function() {
+		$scope.resetPaymentValuesAndState();
+	});
+	
+	$('#enter-payment-dialog').on('show', function() {
+		$scope.resetPaymentValuesAndState();
+	});
 	
 	$scope.checkIfEnableOrDisable = function () {
 		//console.log("isYearValid:"  + $scope.isYearValid + " payment:" +  $scope.isPaymentAmountValid +
@@ -289,7 +310,7 @@ function enterPaymentCtrl($scope, $http) {
 
 	
 	$scope.addPaymentRow = function () {
-		var spreadSheetFileName = "CreditCard_".concat( $('#creditCardName').val() );
+		var spreadSheetFileName = "CreditCard_".concat( $('#paymentCreditCardName').val() );
 		var wsName = "Sheet1";
 		var paymentMonth = $('#paymentMonth').val();
 		var paymentYear = $('#ccYearField').val();
@@ -314,7 +335,7 @@ function enterPaymentCtrl($scope, $http) {
 				}
 			}).then(function (response) {
 				console.log ("AddPaymentRow /ccaddpayment response JSON object is: " + JSON.stringify(response) );
-				//window.alert("The file that will be created: " + response.data.members.fileNameThatWasPassedDownWas);
+				window.alert("Thank you.  Your payment has been added");
 			});
 		//TODO: Error handling
 		

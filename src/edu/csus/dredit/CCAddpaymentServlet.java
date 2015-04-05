@@ -5,6 +5,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import com.google.gdata.client.spreadsheet.*;
+import com.google.gdata.data.spreadsheet.*;
+import com.google.gdata.util.ServiceException;
+//import com.google.gdata.util.*;
+
+import edu.csus.dredit.model.SpreadsheetHandler;
 
 public class CCAddpaymentServlet extends DrEditServlet 
 {
@@ -35,26 +41,25 @@ public class CCAddpaymentServlet extends DrEditServlet
 	  System.out.println("Name:" + spreadsheetName + " ws:" + worksheetName + " date:" + month + " " + year + " amount:" +  
 			  amount + " balance:" + balance + " apr: " + apr);
 	  
-	  //TODO: Once we figure out how to include the spreadsheet libraries in the project, want to create the 
-	  //spreadhseet service object and call the Spreadsheet handler object to handle reading and writing to the spreadsheet.
-	  //We need to import this file, from the command line project
-	  /*
 	  SpreadsheetService service = new SpreadsheetService("CCDebtViewerService");
+	  
+	  
 	  service.setOAuth2Credentials(getCredential(req, resp));
 	  
 	  //create a new object to handle the spreadsheet requests
 	  System.out.println("CCAddpaymentServlet after OAuth call");
-	  */
-	  /*
+	  
+	  
 	  SpreadsheetHandler mySpreadsheet = new SpreadsheetHandler(service, spreadsheetName);
 	  try
 	  {
 		  mySpreadsheet.addNewPaymentInfo(month + " " + year, amount, balance, apr);
+		  System.out.println("CCAddpaymentServlet: Finished adding the payment info");
 	  }
 	  catch (ServiceException e)
 	  {
-		  System.out.println("There was an exception: " + e);
+		  System.out.println("CCAddpaymentServlet: There was an exception: " + e);
 	  }
-	   */
+	   
   }
 }

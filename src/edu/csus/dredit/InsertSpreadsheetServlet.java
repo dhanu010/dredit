@@ -51,7 +51,8 @@ public class InsertSpreadsheetServlet extends DrEditServlet {
 		File body = new File();
 		body.setTitle(creditCardName);
 		body.setDescription("A Spreadsheet stores the credit card summary");
-		body.setMimeType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		//body.setMimeType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		body.setMimeType("application/vnd.google-apps.spreadsheet");
 		return body;
 	}
 
