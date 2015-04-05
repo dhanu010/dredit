@@ -139,6 +139,20 @@ function generateReportCtrl($scope, $http) {
 		$('#generate-report-dialog').modal('hide');
 	};
 	
+	$scope.generateReportByCreditCard = function() {
+		creditCardNames = $('#creditCardNames').val();
+		console.log("Entered Credit card is:" + creditCardNames);
+		alert(creditCardNames);
+		$http.get("/generatereportbycc", {
+	    	params:{
+	    		'creditCardName':creditCardNames
+   			}
+    }).then(function(response) {
+			window.alert("Report that you requested has been generated. Check your Drive. ");
+		});
+		$('#generate-report-bycreditcard-dialog').modal('hide');
+	};
+	
 }
 
 function enterPaymentCtrl($scope) {
