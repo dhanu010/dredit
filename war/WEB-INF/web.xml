@@ -62,7 +62,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>AboutServlet</servlet-name>
     <url-pattern>/about</url-pattern>
   </servlet-mapping>
-  <!-- Credit card viewer servlets added by Juan -->
+  <!-- Credit card viewer servlets added by Juan and Avani -->
     <servlet>
     <servlet-name>CCReportServlet</servlet-name>
     <servlet-class>edu.csus.dredit.CCReportServlet</servlet-class>
@@ -78,6 +78,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>GenerateCreditCardDropDownServlet</servlet-name>
     <url-pattern>/ccdropdown</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>CCAddpaymentServlet</servlet-name>
+    <servlet-class>edu.csus.dredit.CCAddpaymentServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CCAddpaymentServlet</servlet-name>
+    <url-pattern>/ccaddpayment</url-pattern>
   </servlet-mapping>
   
   <!--  end credit card debt viewer servlets -->
