@@ -35,7 +35,7 @@ public class InsertSpreadsheetServlet extends DrEditServlet {
 		    System.out.println("-----------------4");
 		    try
 		    {
-		    	File file = service.files().insert(body, mediaContent).execute();
+		    	File file = service.files().insert(body, mediaContent).setConvert(true).execute();
 		    	System.out.println("-----------------5");
 		    	System.out.println("File ID: " + file.getId());
 		    	sendJson(resp, "File is created");
