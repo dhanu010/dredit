@@ -155,17 +155,47 @@ function generateReportCtrl($scope, $http) {
 	
 }
 
-function enterPaymentCtrl($scope) {
+function enterPaymentCtrl($scope, $http) {
+
+	$scope.resetPaymentValuesAndState = function() {
+		//reset the state
+		$scope.isYearValid = false;
+		$scope.isPaymentAmountValid = false;
+		$scope.isBalanceAmountValid = false;
+		$scope.isAPRValid = false;
+		$('#addPaymentButton').attr('disabled','disabled');
 	
-	$scope.isYearValid = false;
-	$scope.isPaymentAmountValid = false;
-	$scope.isBalanceAmountValid = false;
-	$scope.isAPRValid = false;
-	$('#addPaymentButton').attr('disabled','disabled');
+		//reset the values
+		$('#ccYearField').val("");
+		$('#ccYearEnteredErrorMsg').text("");
+		$('#ccPaymentField').val("");
+		$('#ccPaymentEnteredErrorMsg').text("");
+		$('#ccBalanceField').val("");
+		$('#ccBalanceEnteredErrorMsg').text("");
+		$('#ccAprField').val("");
+		$('#ccAprEnteredErrorMsg').text("");
+		
+		//get the names of credit cards
+		$http.get('/ccdropdown').then(function (response) {
+			$scope.creditCardNames = response.data.members;
+			console.log ("EnteredPaymentCtrl credit cards are: " + JSON.stringify(response) );
+			});		
+	}
+
+	//call this when it first opens
+	$scope.resetPaymentValuesAndState();
+	
+	$('#enter-payment-dialog').on('hide', function() {
+		$scope.resetPaymentValuesAndState();
+	});
+	
+	$('#enter-payment-dialog').on('show', function() {
+		$scope.resetPaymentValuesAndState();
+	});
 	
 	$scope.checkIfEnableOrDisable = function () {
-		console.log("isYearValid:"  + $scope.isYearValid + " payment:" +  $scope.isPaymentAmountValid +
-				" balance:" + $scope.isBalanceAmountValid + " APR:" + $scope.isAPRValid);
+		//console.log("isYearValid:"  + $scope.isYearValid + " payment:" +  $scope.isPaymentAmountValid +
+		//		" balance:" + $scope.isBalanceAmountValid + " APR:" + $scope.isAPRValid);
 		if($scope.isYearValid && $scope.isPaymentAmountValid && $scope.isBalanceAmountValid && $scope.isAPRValid)
 			$('#addPaymentButton').removeAttr("disabled");
 		else
@@ -175,9 +205,9 @@ function enterPaymentCtrl($scope) {
 	//check to see if the year entered is valid
 	$('#ccYearField').on('change', function () {  
 		var valueEntered = $('#ccYearField').val();
-		console.log("entered year is: " + valueEntered);
+		//console.log("entered year is: " + valueEntered);
 		var valueEnteredAsNumber = Number(valueEntered);
-		console.log("entered year as number is:" + valueEnteredAsNumber);
+		//console.log("entered year as number is:" + valueEnteredAsNumber);
 		if(! valueEnteredAsNumber) { //value entered is not a NaN
 			$('#ccYearEnteredErrorMsg').text("Please enter a valid year in the form YYYY");
 			$scope.isYearValid = false;
@@ -196,7 +226,6 @@ function enterPaymentCtrl($scope) {
 		else {
 			$('#ccYearEnteredErrorMsg').text("");
 			$scope.isYearValid = true;
-			console.log("YAY!");
 			$scope.checkIfEnableOrDisable();
 		}
 	});
@@ -205,9 +234,9 @@ function enterPaymentCtrl($scope) {
 	//TODO: Remove '$' and ',' so that numbers like $5,000 can be accepted
 	$('#ccPaymentField').on('change', function () {  
 		var valueEntered = $('#ccPaymentField').val();
-		console.log("entered Payment is: " + valueEntered);
+		//console.log("entered Payment is: " + valueEntered);
 		var valueEnteredAsNumber = Number(valueEntered);
-		console.log("entered payment as number is:" + valueEnteredAsNumber);
+		//console.log("entered payment as number is:" + valueEnteredAsNumber);
 		if(! valueEnteredAsNumber) { //value entered is not a NaN
 			$('#ccPaymentEnteredErrorMsg').text("Balance entered must be a number");
 			$scope.isPaymentAmountValid = false;
@@ -229,9 +258,9 @@ function enterPaymentCtrl($scope) {
 	//TODO: Remove '$' and ',' so that numbers like $5,000 can be accepted
 	$('#ccBalanceField').on('change', function () {  
 		var valueEntered = $('#ccBalanceField').val();
-		console.log("entered Balance is: " + valueEntered);
+		//console.log("entered Balance is: " + valueEntered);
 		var valueEnteredAsNumber = Number(valueEntered);
-		console.log("entered balance as number is:" + valueEnteredAsNumber);
+		//console.log("entered balance as number is:" + valueEnteredAsNumber);
 		if(! valueEnteredAsNumber) { //value entered is not a NaN
 			$('#ccBalanceEnteredErrorMsg').text("Balance entered must be a number");
 			$scope.isBalanceAmountValid = false;
@@ -245,7 +274,7 @@ function enterPaymentCtrl($scope) {
 		else {
 			$('#ccBalanceEnteredErrorMsg').text("");
 			$scope.isBalanceAmountValid = true;
-			console.log("isBalanceAmountValid was set to true");
+			//console.log("isBalanceAmountValid was set to true");
 			$scope.checkIfEnableOrDisable();
 		}
 	});
@@ -254,9 +283,9 @@ function enterPaymentCtrl($scope) {
 	//TODO: Remove '%' and ',' so that numbers like 10% can be accepted
 	$('#ccAprField').on('change', function () {  
 		var valueEntered = $('#ccAprField').val();
-		console.log("entered APR is: " + valueEntered);
+		//console.log("entered APR is: " + valueEntered);
 		var valueEnteredAsNumber = Number(valueEntered);
-		console.log("entered APR as number is:" + valueEnteredAsNumber);
+		//console.log("entered APR as number is:" + valueEnteredAsNumber);
 		if(! valueEnteredAsNumber) { //value entered is not a NaN
 			$('#ccAprEnteredErrorMsg').text("Interest should be a number");
 			$scope.isAPRValid = false;
@@ -281,7 +310,37 @@ function enterPaymentCtrl($scope) {
 
 	
 	$scope.addPaymentRow = function () {
-		//add code to add payment
+		var spreadSheetFileName = "CreditCard_".concat( $('#paymentCreditCardName').val() );
+		var wsName = "Sheet1";
+		var paymentMonth = $('#paymentMonth').val();
+		var paymentYear = $('#ccYearField').val();
+		var paymentAmount = $('#ccPaymentField').val();
+		var currentBalance = $('#ccBalanceField').val();
+		var currentApr = $('#ccAprField').val();
+		console.log("Calling addPaymentRow read the following: Name-" + spreadSheetFileName +
+				" WS=" + wsName + " Month-" + paymentMonth + " Year-" + paymentYear + 
+				" Amount-" + paymentAmount + " Balance- " + currentBalance + " APR- " + currentApr);
+					
+		
+		 $http.get("/ccaddpayment", {
+			params: {
+				spreadsheetName:spreadSheetFileName,
+				worksheetName:wsName,
+				month:paymentMonth,
+				year:paymentYear,
+				amount:paymentAmount,
+				balance:currentBalance,
+				apr:currentApr
+				//add the rest of parameters
+				}
+			}).then(function (response) {
+				console.log ("AddPaymentRow /ccaddpayment response JSON object is: " + JSON.stringify(response) );
+				window.alert("Thank you.  Your payment has been added");
+			});
+		//TODO: Error handling
+		
+		
+		$('#enter-payment-dialog').modal('hide')
 	};
 	
 }

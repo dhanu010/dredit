@@ -44,7 +44,9 @@ public class CredentialManager {
       "https://www.googleapis.com/auth/drive.file",
       // Required to identify the user in our data store.
       "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile");
+      "https://www.googleapis.com/auth/userinfo.profile",
+      //added by Juan to have access to spreadsheet
+      "https://spreadsheets.google.com/feeds");
 
   /**
    * Credential store to get, save, delete user credentials.

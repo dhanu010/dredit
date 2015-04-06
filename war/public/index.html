@@ -108,6 +108,12 @@
     		<h3><b>Enter Payment Information:</b></h3>
   			</div>
   			<div class="modal-body">
+  			<form>
+  				<label>Select credit card</label>		
+				<select id="paymentCreditCardName">
+					<option ng-repeat="creditCardName in creditCardNames">{{creditCardName}}</option>
+				</select>
+  			</form>
     		<form>
         		<label>Month:</label>
         		<select id="paymentMonth"> 
