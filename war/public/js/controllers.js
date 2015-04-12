@@ -94,13 +94,28 @@ function AboutCtrl($scope, backend) {
 
 /*Functions added by Avani BEGIN here*/
 function addCardCtrl($scope, backend) {
-			$scope.addCreditCard = function () {
-				creditCardName = $('#creditCardName').val();
-				console.log("Entered Credit card is: " + creditCardName);
-			backend.insertspreadsheet();
-			};
-			
-	}
+
+	    //reset the values
+		$scope.resetAddCCValuesAndState = function() {
+		$('#creditCardName').val("");
+		};
+
+		$scope.addCreditCard = function () {
+		creditCardName = $('#creditCardName').val();
+		//console.log("Entered Credit card is: " + creditCardName);
+		backend.insertspreadsheet();
+		};
+		
+		$scope.resetAddCCValuesAndState();
+		
+		$('#add-card-dialog').on('hide', function() {
+			$scope.resetAddCCValuesAndState();
+		});
+		
+		$('#add-card-dialog').on('show', function() {
+			$scope.resetAddCCValuesAndState();
+		});
+}
 /*Functions added by Avani END here*/
 
 /*Functions added by Juan Begin here
@@ -139,22 +154,44 @@ function generateReportCtrl($scope, $http) {
 		$('#generate-report-dialog').modal('hide');
 	};
 	
+	
 	$scope.generateReportByCreditCard = function() {
+			
+		    //reset the state
+			$scope.resetGenerateReportByCCValuesAndState = function() {
+			$('#creditCardNames').val(""); 
+		};
+			
 		creditCardNames = $('#creditCardNames').val();
 		console.log("Entered Credit card is:" + creditCardNames);
-		alert(creditCardNames);
+		//alert(creditCardNames);
+		
 		$http.get("/generatereportbycc", {
 	    	params:{
 	    		'creditCardName':creditCardNames
-   			}
-    }).then(function(response) {
-			window.alert("Report that you requested has been generated. Check your Drive. ");
-		});
-		$('#generate-report-bycreditcard-dialog').modal('hide');
-	};
+   			       }
+				}).then(function(response) {
+					window.alert("Requested report has been generated in your Drive. Thank you. ");
+				}); 
+			
+				//$('#generate-report-bycreditcard-dialog').modal('hide');
 	
+	
+			$scope.resetGenerateReportByCCValuesAndState();
+	
+			$('#generate-report-bycreditcard-dialog').on('hide', function() {
+				$scope.resetGenerateReportByCCValuesAndState();
+			});
+	
+			$('#generate-report-bycreditcard-dialog').on('show', function() {
+				$scope.resetGenerateReportByCCValuesAndState();
+			});
+			
+			$('#generate-report-bycreditcard-dialog').modal('hide');
+		}
 }
 
+	
 function enterPaymentCtrl($scope, $http) {
 
 	$scope.resetPaymentValuesAndState = function() {
@@ -266,8 +303,8 @@ function enterPaymentCtrl($scope, $http) {
 			$scope.isBalanceAmountValid = false;
 			$scope.checkIfEnableOrDisable();
 		}
-		else if(valueEnteredAsNumber < 0 ) {
-			$('#ccBalanceEnteredErrorMsg').text("Balance must be greater than 0");
+		else if(valueEnteredAsNumber >= 0 ) {
+			$('#ccBalanceEnteredErrorMsg').text("Balance can't be a negative number");
 			$scope.isBalanceAmountValid = false;
 			$scope.checkIfEnableOrDisable();
 		}
