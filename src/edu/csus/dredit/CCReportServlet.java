@@ -2,13 +2,16 @@
 package edu.csus.dredit;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
+import com.google.gdata.data.spreadsheet.*;
+import com.google.gdata.util.ServiceException;
 import com.google.api.services.drive.Drive;
+import com.google.gdata.client.spreadsheet.SpreadsheetService;
 //import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 //import com.google.api.services.oauth2.Oauth2;
 //import com.google.api.services.oauth2.model.Userinfoplus;
@@ -16,6 +19,12 @@ import com.google.gson.JsonObject;  //added by Juan to manipulate JSON data
 import com.google.api.services.drive.model.File;  //added for File manipulation
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.FileContent;
+
+import java.util.List;
+import java.util.Date;
+import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 
 
@@ -55,10 +64,19 @@ public class CCReportServlet extends DrEditServlet
 	    	//TODO: add the code here that will generate the report, and pass in the data
 	    	//into the createReportFile function (for now, it is passed in as a string)
 
-	    	JsonObject returnObject = createReportFile(req,resp,fileName, JSON_REPORT_SUMMARY, "Amazing Report Coming Soon...");
-		       
-	    	sendJson(resp, returnObject);
-	    	//generate report by summary
+	    	SpreadsheetService service = new SpreadsheetService("CCDebtViewerService");
+	    	service.setOAuth2Credentials(getCredential(req, resp));
+	    	
+	    	try {
+	    		JsonObject returnObject = createReportFile(req,resp,fileName, JSON_REPORT_SUMMARY, getSummaryReportData(service));
+	    		sendJson(resp, returnObject);
+		    	//generate report by summary
+	    	
+	    	} catch(ServiceException e)
+	    	{
+	    		System.out.println("Error: " + e);
+	    	}
+	    	
 	    } 
 	    
 	    else if(reportType.equals(JSON_REPORT_BY_CREDIT_CARD))
@@ -77,6 +95,153 @@ public class CCReportServlet extends DrEditServlet
 	    	//generate error code
 	    }    
   }
+  
+  /*helper function that will gather the data for the report*/
+  private String getSummaryReportData(SpreadsheetService service) throws MalformedURLException, IOException, ServiceException
+  {
+	  String reportInfo = "Report By Summary\n";
+	  int numberOfCards = 0;
+	  String nameOfCards = "";
+	  double averagePaymentSum = 0;
+	  double aprSum = 0;
+	  double balanceSum = 0;
+	  
+	  URL SPREADSHEET_FEED_URL = new URL(
+			  "https://spreadsheets.google.com/feeds/spreadsheets/private/full");
+	  
+	  // Make a request to the API and get all spreadsheets.
+	  SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, SpreadsheetFeed.class);
+	  List<SpreadsheetEntry> spreadsheets = feed.getEntries();
+	  
+	  // Iterate through all of the spreadsheets returned
+	  for (SpreadsheetEntry spreadsheet : spreadsheets) 
+	  {
+		  if ( spreadsheet.getTitle().getPlainText().startsWith("CreditCard_") )  
+		  {
+			  for (WorksheetEntry worksheet : spreadsheet.getWorksheets() )
+			  {
+				  if (worksheet.getTitle().getPlainText().equals("Sheet1") )
+				  {
+					  numberOfCards +=1;
+					  nameOfCards += spreadsheet.getTitle().getPlainText().replace("CreditCard_","") + ", ";
+					  averagePaymentSum += getAverageColumn(worksheet,service,"Payment");
+					  System.out.println("Average sum after *" + spreadsheet.getTitle().getPlainText() + "*: " + averagePaymentSum);
+					  aprSum += getLatestColumn(worksheet,service, "APR");
+					  balanceSum += getLatestColumn(worksheet,service,"Balance");
+				  }
+					  
+			  }
+		  }
+		
+	   }
+	  
+	  if(numberOfCards == 0)
+	  {
+		  reportInfo += "No payment information was found.  Please add a credit card, and payment information in order to \n";
+		  reportInfo +="be able to generate reports\n";
+	  }
+	  else
+	  {
+		  reportInfo += "\tLatest Total Balance: " + balanceSum + "\n";
+		  reportInfo += "\tOverall Average Payment Amount: " + averagePaymentSum/numberOfCards + "\n";
+		  reportInfo += "\tLatest Average APR: " + aprSum/numberOfCards + "\n";
+		  reportInfo += "\tTotal number of credit cards: " + numberOfCards + "\n";
+		  reportInfo += "\tName of credit cards" + nameOfCards + "\n";
+	  }
+	  
+	  return reportInfo;
+  }
+  
+  /*helper function.  Takes in a worksheet, service, and column name as parameters and goes through the 
+   * reading the numerical values of this column and returns the average.  
+   * NOTE: Any Non-numerical entries will be ignored in the average
+   */
+  private double getAverageColumn(WorksheetEntry worksheet,SpreadsheetService service,String columnName) 
+  throws IOException, ServiceException
+  {
+	  int numberOfValues = 0;
+	  double valueSum = 0;
+	  
+	  URL listFeedUrl = worksheet.getListFeedUrl();
+	  ListFeed listFeed = service.getFeed(listFeedUrl, ListFeed.class);
+
+	  // Iterate through each row
+	  for (ListEntry row : listFeed.getEntries()) 
+	  {
+	      String currentStringValue = row.getCustomElements().getValue(columnName);
+	      try
+	      {	  
+	    	  if(currentStringValue != null)  
+	    	  {
+	    		  	double currentDoubleValue = Double.parseDouble(currentStringValue);
+	    	  		numberOfValues++;
+	    	  		valueSum += currentDoubleValue;
+	    	  }
+	      } catch(NumberFormatException e)
+	      {
+	    	  //if the value is not an integer, ignore that value and log
+	    	  System.out.println("getAverageColumn, will ignore: " + currentStringValue + " because it is not a number\n");
+	      }
+	   }
+
+	  if(numberOfValues == 0)
+		  return 0; //no 
+	  else
+		  return valueSum/numberOfValues;
+	
+  }
+
+  /*helper function.  Takes in a worksheet, service, and column name as parameters and goes through the 
+   * reading the numerical values of this column and returns the latest value (according to the date).  
+   * NOTE: Any Non-numerical entries will be ignored in the average, and any entries with no date will 
+   * also be ignored
+   */
+  private double getLatestColumn(WorksheetEntry worksheet,SpreadsheetService service,String columnName) 
+  throws IOException, ServiceException
+  {
+	  SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+	  double latestValue = 0;
+	  Date latestDate = new Date(); 
+	  latestDate.setTime(0);  //set time to January 1, 1970
+	  
+	  URL listFeedUrl = worksheet.getListFeedUrl();
+	  ListFeed listFeed = service.getFeed(listFeedUrl, ListFeed.class);
+
+	  // Iterate through each row
+	  for (ListEntry row : listFeed.getEntries()) 
+	  {
+	      String currentStringValue = row.getCustomElements().getValue(columnName);
+	      String dateStringValue = row.getCustomElements().getValue("Date");	      
+	      try
+	      {	  
+	    	  if(currentStringValue != null && dateStringValue != null)  
+	    	  {
+	    		  Date newDate = formatter.parse(dateStringValue);
+
+	    		  if( newDate.after(latestDate) )
+	    		  {
+	    			  	double currentDoubleValue = Double.parseDouble(currentStringValue);
+	    	  			latestDate = newDate;
+	    	  			latestValue = currentDoubleValue;
+	    		  }
+	    	  }
+	      } 
+	      catch(NumberFormatException e)
+	      {
+	    	  //if the value is not a number, ignore that value and log
+	    	  System.out.println("getLatestColumn, will ignore: " + currentStringValue + " because it is not a number\n");
+	      }
+	      catch(ParseException e)
+	      {
+	    	  //date was not in the expected format, ignore it
+	    	  System.out.println("getLatestColumn, will ignore " + currentStringValue + " because the date was not as expected\n");
+	      }
+	   }
+
+	 return latestValue;
+  }
+
+  
   
   /*helper function that will create the summary report
    * TODO: find a better way to store the content, instead of in a BIG-O string (once the file becomes long)
