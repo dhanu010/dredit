@@ -357,27 +357,26 @@ function enterPaymentCtrl($scope, $http) {
 		console.log("Calling addPaymentRow read the following: Name-" + spreadSheetFileName +
 				" WS=" + wsName + " Month-" + paymentMonth + " Year-" + paymentYear + 
 				" Amount-" + paymentAmount + " Balance- " + currentBalance + " APR- " + currentApr);
-					
 		
-		 $http.get("/ccaddpayment", {
-			params: {
-				spreadsheetName:spreadSheetFileName,
-				worksheetName:wsName,
-				month:paymentMonth,
-				year:paymentYear,
-				amount:paymentAmount,
-				balance:currentBalance,
-				apr:currentApr
-				//add the rest of parameters
-				}
-			}).then(function (response) {
-				console.log ("AddPaymentRow /ccaddpayment response JSON object is: " + JSON.stringify(response) );
-				window.alert("Thank you.  Your payment has been added");
-			});
-		//TODO: Error handling
+		if(typeof $('#addPaymentButton').attr('disabled') == 'undefined') {
+			$http.get("/ccaddpayment", {
+				params: {
+					spreadsheetName:spreadSheetFileName,
+					worksheetName:wsName,
+					month:paymentMonth,
+					year:paymentYear,
+					amount:paymentAmount,
+					balance:currentBalance,
+					apr:currentApr
+					}
+				}).then(function (response) {
+					console.log ("AddPaymentRow /ccaddpayment response JSON object is: " + JSON.stringify(response) );
+					window.alert("Thank you.  Your payment has been added");
+				});
 		
-		
-		$('#enter-payment-dialog').modal('hide')
+			$('#enter-payment-dialog').modal('hide');
+		}
+		//else, don't do anything.  The button is disabled, no action should occur
 	};
 	
 }
