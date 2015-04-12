@@ -117,6 +117,8 @@ public class CCReportServlet extends DrEditServlet
 	  String nameOfEnteredCard = "";
 	  double outstandingDebt = 0;
 	  int numberOfCards = 0;
+	  WorksheetEntry paymentHistory;
+	  SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 	  
 	  
 	  URL SPREADSHEET_FEED_URL = new URL(
@@ -139,6 +141,51 @@ public class CCReportServlet extends DrEditServlet
 					  nameOfEnteredCard += spreadsheet.getTitle().getPlainText().replace("CreditCard_"," ") ;
 					  outstandingDebt = getLatestColumn(worksheet,service,"Balance");
 					  System.out.println("Outstanding Debt is *" + spreadsheet.getTitle().getPlainText() + "*: " + outstandingDebt);
+					  String spreadsheetTitle = spreadsheet.getTitle().getPlainText();
+					  System.out.println("spreadsheetTitle is *** " + spreadsheetTitle);
+					  System.out.println("Number of rows = " + worksheet.getRowCount());
+					  
+					  reportInfoCC += "\tReport of " +"*"+nameOfEnteredCard+" *"+ " credit card\n";
+					  reportInfoCC += "\tOutstanding Debt Amount: " + outstandingDebt + "\n\n\n";
+					  
+					  URL listFeedUrl = worksheet.getListFeedUrl();
+					  ListFeed listFeed = service.getFeed(listFeedUrl, ListFeed.class);
+					  
+					  reportInfoCC += "Payment history of "+"*"+nameOfEnteredCard+" *"+" credit card is as below:" + "\n";
+					  reportInfoCC += "Date" + "\t\t";
+		    		  reportInfoCC += "Payment" + "\t";
+		    		  reportInfoCC += "Balance" + "\t";
+		    		  reportInfoCC += "APR" + "\t";
+		    		  
+					  
+		    		  // Iterate through each row
+					  for (ListEntry row : listFeed.getEntries()) 
+					  {
+						  reportInfoCC += "\n";
+						  String currentDateValue = row.getCustomElements().getValue("Date");
+					      String currentPaymentValue = row.getCustomElements().getValue("Payment");
+					      String currentBalanceValue = row.getCustomElements().getValue("Balance");
+					      String currentAPRValue = row.getCustomElements().getValue("APR");
+					      try
+					      {	  
+					    	  if(currentDateValue != null && currentPaymentValue != null && currentBalanceValue!= null && currentAPRValue!= null)  
+					    	  {
+					    		  	double currentPaymentDoubleValue = Double.parseDouble(currentPaymentValue);
+					    		  	double currentBalanceDoubleValue = Double.parseDouble(currentBalanceValue);
+					    		  	double currentAPRDoubleValue = Double.parseDouble(currentAPRValue);
+					    		  	reportInfoCC += currentDateValue + "\t";
+					    		  	reportInfoCC += currentPaymentDoubleValue + "\t";
+					    		  	reportInfoCC += currentBalanceDoubleValue + "\t";
+					    		  	reportInfoCC += currentAPRDoubleValue + "\t";
+					    		  	
+					    	  }
+					      } catch(NumberFormatException e)
+					      {
+					    	  //if the value is not an integer, ignore that value and log
+					    	  System.out.println("getAverageColumn, will ignore:  because it is not a number\n");
+					      }
+					   }
+					  
 					  
 				  }
 					  
@@ -149,15 +196,16 @@ public class CCReportServlet extends DrEditServlet
 	  
 	  if(numberOfCards == 0)
 	  {
+		  reportInfoCC = "";
 		  reportInfoCC += "No payment information was found.  Please add a credit card, and payment information in order to \n";
 		  reportInfoCC +="be able to generate reports\n";
 	  }
-	  else
+	  /*else
 	  {
 		  //reportInfoCC += "\tTotal number of credit cards: " + numberOfCards + "\n";
-		  reportInfoCC += "\tReport of " +"*"+nameOfEnteredCard+"*"+ " credit card\n";
-		  reportInfoCC += "\tOutstanding Debt Amount: " + outstandingDebt + "\n";
-	  }
+		
+		  //reportInfoCC += "\tPayment History for this card is as below: " + paymentHistory + "\n";
+	  }*/
 	  
 	  return reportInfoCC;
   }

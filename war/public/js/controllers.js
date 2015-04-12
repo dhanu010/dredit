@@ -183,7 +183,7 @@ function generateReportCtrl($scope, $http) {
 	    		'creditCardName':creditCardNames
    			       }
 				}).then(function(response) {
-					window.alert("Requested report has been generated in your Drive. Thank you. ");
+					window.alert("Requested Credit Card Report is generated in your Drive.");
 				}); 
 			
 				$('#generate-report-bycreditcard-dialog').modal('hide');
