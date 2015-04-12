@@ -12,11 +12,14 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class GenerateCreditCardDropDownServlet extends DrEditServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		Drive service = getDriveService(getCredential(req, resp));
@@ -55,6 +58,8 @@ public class GenerateCreditCardDropDownServlet extends DrEditServlet {
 
 					if (file.getTitle() != null
 							&& file.getTitle().contains("CreditCard_")) {
+						if (file.getExplicitlyTrashed() != null && file.getExplicitlyTrashed())
+							continue;
 						result.add(file.getTitle());
 						System.out.println("File title is " + file.getTitle());
 					}

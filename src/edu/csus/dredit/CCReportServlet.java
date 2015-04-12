@@ -4,27 +4,28 @@ package edu.csus.dredit;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gdata.data.spreadsheet.*;
-import com.google.gdata.util.ServiceException;
+import com.google.api.client.http.ByteArrayContent;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;  //added for File manipulation
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
+import com.google.gdata.data.spreadsheet.ListEntry;
+import com.google.gdata.data.spreadsheet.ListFeed;
+import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
+import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
+import com.google.gdata.data.spreadsheet.WorksheetEntry;
+import com.google.gdata.util.ServiceException;
 //import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 //import com.google.api.services.oauth2.Oauth2;
 //import com.google.api.services.oauth2.model.Userinfoplus;
 import com.google.gson.JsonObject;  //added by Juan to manipulate JSON data
-import com.google.api.services.drive.model.File;  //added for File manipulation
-import com.google.api.client.http.ByteArrayContent;
-import com.google.api.client.http.FileContent;
-
-import java.util.List;
-import java.util.Date;
-import java.util.Calendar;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 
 
@@ -58,6 +59,7 @@ public class CCReportServlet extends DrEditServlet
   {
 	   String reportType = req.getParameter(JSON_REPORT_TYPE_LABEL);
 	   String fileName = req.getParameter(JSON_FILE_NAME_LABEL);
+	   String creditCardName = req.getParameter("creditCardName");
 	    
 	    if(reportType.equals(JSON_REPORT_SUMMARY))
 	    {
@@ -83,6 +85,19 @@ public class CCReportServlet extends DrEditServlet
 	    {
 	    	
 	    	//generate report by credit card
+	    	System.out.println("inside of credit card report functionality");
+	    	
+	    	SpreadsheetService service = new SpreadsheetService("CCDebtViewerService");
+	    	service.setOAuth2Credentials(getCredential(req, resp));
+	    	
+	    	try {
+	    			JsonObject returnObject = createReportFile(req,resp,fileName, JSON_REPORT_BY_CREDIT_CARD, getReportByCCData(service, creditCardName));
+	    			sendJson(resp, returnObject);
+		    	//generate report by cc
+	    	
+	    		} catch(ServiceException e){
+	    			System.out.println("Error: " + e);
+	    		}
 	    }
 	    
 	    else if(reportType.equals(JSON_REPORT_BY_MONTH))
@@ -95,6 +110,58 @@ public class CCReportServlet extends DrEditServlet
 	    	//generate error code
 	    }    
   }
+  
+  private String getReportByCCData(SpreadsheetService service, String creditCardName) throws MalformedURLException, IOException, ServiceException
+  {
+	  String reportInfoCC = "Report By Credit Card\n";
+	  String nameOfEnteredCard = "";
+	  double outstandingDebt = 0;
+	  int numberOfCards = 0;
+	  
+	  
+	  URL SPREADSHEET_FEED_URL = new URL(
+			  "https://spreadsheets.google.com/feeds/spreadsheets/private/full");
+	  
+	  // Make a request to the API and get all spreadsheets.
+	  SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, SpreadsheetFeed.class);
+	  List<SpreadsheetEntry> spreadsheets = feed.getEntries();
+	  
+	  // Iterate through all of the spreadsheets returned
+	  for (SpreadsheetEntry spreadsheet : spreadsheets) 
+	  {
+		  if ( spreadsheet.getTitle().getPlainText().equals("CreditCard_" + creditCardName) )  
+		  {
+			  for (WorksheetEntry worksheet : spreadsheet.getWorksheets() )
+			  {
+				  if (worksheet.getTitle().getPlainText().equals("Sheet1") )
+				  {
+					  numberOfCards +=1;
+					  nameOfEnteredCard += spreadsheet.getTitle().getPlainText().replace("CreditCard_"," ") ;
+					  outstandingDebt = getLatestColumn(worksheet,service,"Balance");
+					  System.out.println("Outstanding Debt is *" + spreadsheet.getTitle().getPlainText() + "*: " + outstandingDebt);
+					  
+				  }
+					  
+			  }
+		  }
+		
+	   }
+	  
+	  if(numberOfCards == 0)
+	  {
+		  reportInfoCC += "No payment information was found.  Please add a credit card, and payment information in order to \n";
+		  reportInfoCC +="be able to generate reports\n";
+	  }
+	  else
+	  {
+		  //reportInfoCC += "\tTotal number of credit cards: " + numberOfCards + "\n";
+		  reportInfoCC += "\tReport of " +"*"+nameOfEnteredCard+"*"+ " credit card\n";
+		  reportInfoCC += "\tOutstanding Debt Amount: " + outstandingDebt + "\n";
+	  }
+	  
+	  return reportInfoCC;
+  }
+  
   
   /*helper function that will gather the data for the report*/
   private String getSummaryReportData(SpreadsheetService service) throws MalformedURLException, IOException, ServiceException

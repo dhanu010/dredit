@@ -13,7 +13,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/insertspreadsheet</url-pattern>
 	</servlet-mapping>
 	
-	<servlet>
+	<!-- <servlet>
 		<servlet-name>GenerateReportByCreditCardServlet</servlet-name>
 		<servlet-class>edu.csus.dredit.GenerateReportByCreditCardServlet</servlet-class>
 	</servlet>
@@ -21,7 +21,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>GenerateReportByCreditCardServlet</servlet-name>
 		<url-pattern>/generatereportbycc</url-pattern>
 	</servlet-mapping>
-	
+	 -->
 	<servlet>
 		<servlet-name>Dredit</servlet-name>
 		<servlet-class>edu.csus.dredit.DrEditServlet</servlet-class>

@@ -128,6 +128,13 @@ function generateReportCtrl($scope, $http) {
 	};
 
 	$scope.generateCreditCardDropDown = function () {
+		//reset the state
+		$scope.resetGenerateReportByCCValuesAndState = function() {
+		$('#creditCardNames').val("");
+		};
+		
+		$scope.resetGenerateReportByCCValuesAndState();
+		
 		$http.get('/ccdropdown').then(function (response) {
 			$scope.creditCardNames = response.data.members;
 			console.log ("generateReportSummary response JSON object is: " + JSON.stringify(response) );
@@ -144,7 +151,7 @@ function generateReportCtrl($scope, $http) {
 			params: {
 				reportType:"summary",
 				selectValue:"",
-				fileName:"Report by summary " + dateString 
+				fileName:"Report by summary - " + dateString 
 				}
 			}).then(function (response) {
 				console.log ("generateReportSummary response JSON object is: " + JSON.stringify(response) );
@@ -165,19 +172,24 @@ function generateReportCtrl($scope, $http) {
 		creditCardNames = $('#creditCardNames').val();
 		console.log("Entered Credit card is:" + creditCardNames);
 		//alert(creditCardNames);
-		
-		$http.get("/generatereportbycc", {
+		var currDate = new Date();
+		var dateString = creditCardNames + " " + currDate.toDateString() + " " + currDate.getHours() + ":" + 
+			currDate.getMinutes() + ":" + currDate.getSeconds() + ".txt";
+		$http.get("/ccreport", {
 	    	params:{
+	    		reportType:"byCreditCard",
+				selectValue:"",
+				fileName:"Report by Credit Card - " + dateString,
 	    		'creditCardName':creditCardNames
    			       }
 				}).then(function(response) {
 					window.alert("Requested report has been generated in your Drive. Thank you. ");
 				}); 
 			
-				//$('#generate-report-bycreditcard-dialog').modal('hide');
+				$('#generate-report-bycreditcard-dialog').modal('hide');
 	
 	
-			$scope.resetGenerateReportByCCValuesAndState();
+			/*$scope.resetGenerateReportByCCValuesAndState();
 	
 			$('#generate-report-bycreditcard-dialog').on('hide', function() {
 				$scope.resetGenerateReportByCCValuesAndState();
@@ -187,7 +199,7 @@ function generateReportCtrl($scope, $http) {
 				$scope.resetGenerateReportByCCValuesAndState();
 			});
 			
-			$('#generate-report-bycreditcard-dialog').modal('hide');
+			$('#generate-report-bycreditcard-dialog').modal('hide');*/
 		}
 }
 
@@ -303,7 +315,7 @@ function enterPaymentCtrl($scope, $http) {
 			$scope.isBalanceAmountValid = false;
 			$scope.checkIfEnableOrDisable();
 		}
-		else if(valueEnteredAsNumber >= 0 ) {
+		else if(valueEnteredAsNumber < 0 ) {
 			$('#ccBalanceEnteredErrorMsg').text("Balance can't be a negative number");
 			$scope.isBalanceAmountValid = false;
 			$scope.checkIfEnableOrDisable();
