@@ -257,11 +257,12 @@ public class CCReportServlet extends DrEditServlet
 	  }
 	  else
 	  {
-		  reportInfo += "\tLatest Total Balance: " + balanceSum + "\n";
+		  reportInfo += "\tTotal number of credit cards: \t" + numberOfCards + "\n";
+		  reportInfo += "\tName of credit cards: \t" + nameOfCards + "\n\n\n";
+		  reportInfo += "\tLatest Oustanding Balance: " + balanceSum + "\n";
 		  reportInfo += "\tOverall Average Payment Amount: " + averagePaymentSum/numberOfCards + "\n";
 		  reportInfo += "\tLatest Average APR: " + aprSum/numberOfCards + "\n";
-		  reportInfo += "\tTotal number of credit cards: " + numberOfCards + "\n";
-		  reportInfo += "\tName of credit cards" + nameOfCards + "\n";
+
 	  }
 	  
 	  return reportInfo;
